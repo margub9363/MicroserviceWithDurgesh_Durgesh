@@ -17,5 +17,4 @@ public interface HotelService {
 //    getSingle
     Optional<Hotel> getHotel(String id);
 
-//    Hotel get(String id);
 }
