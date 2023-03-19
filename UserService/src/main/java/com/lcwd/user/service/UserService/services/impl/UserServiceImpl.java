@@ -4,6 +4,7 @@ import com.lcwd.user.service.UserService.Exceptions.ResourceNotFoundException;
 import com.lcwd.user.service.UserService.entities.Hotel;
 import com.lcwd.user.service.UserService.entities.Rating;
 import com.lcwd.user.service.UserService.entities.User;
+import com.lcwd.user.service.UserService.external.services.HotelService;
 import com.lcwd.user.service.UserService.repositories.UserRepository;
 import com.lcwd.user.service.UserService.services.UserServices;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserServices {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    HotelService hotelService;
 
     @Override
     public User saveUser(User user) {
@@ -55,10 +59,10 @@ public class UserServiceImpl implements UserServices {
         List<Rating> ratingList = ratings.stream().map(rating -> {
 //            api call to hotel service to get the hotel
 //            http://localhost:8082/hotels/ce4206a1-4eef-4a7a-b76e-29eca1062114
-            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
+//            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+            Hotel hotel = hotelService.getHotel(rating.getHotelId());
             log.info(hotel.toString());
-            log.info("response status code: {}",forEntity.getStatusCode());
+//            log.info("response status code: {}",forEntity.getStatusCode());
 //            set the hotel to rating
             rating.setHotel(hotel);
 //            return the rating
